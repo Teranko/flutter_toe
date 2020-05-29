@@ -15,13 +15,17 @@ class MyFirstApp extends StatefulWidget {
 }
 
 class _MyFirstAppState extends State<MyFirstApp> {
-  bool _loading;
-  double _progressValue;
+  bool _flag;
+  bool _winFlag;
+  var _progressValue;
+  var _progressText;
 
   @override
   void initState() {
-    _loading = false;
-    _progressValue = 0.0;
+    _winFlag = false;
+    _flag = true;
+    _progressValue = ["", "", "", "", "", "", "", "", ""];
+    _progressText = "Ходит 1й игрок";
     super.initState();
   }
 
@@ -29,96 +33,190 @@ class _MyFirstAppState extends State<MyFirstApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
-        backgroundColor: Colors.indigo,
+        backgroundColor: Colors.indigo[50],
         appBar: AppBar(
           title: Text("Tic-Tac-Toe"),
           centerTitle: true,
         ),
         body: Center(
           child: Container(
+            padding: EdgeInsets.all(16),
             child: Row(
               children: <Widget>[
                 Column(
                   children: <Widget>[
+                    Text('${(_progressText)}', style: TextStyle(fontSize: 25)),
                     ButtonBar(
+                      buttonMinWidth: 100,
+                      buttonHeight: 100,
                       children: <Widget>[
                         RaisedButton(
-                          child: Text('1'),
-                          onPressed: null,
+                          key: UniqueKey(),
+                          child: Text('${(_progressValue[0])}', style: TextStyle(fontSize: 60)),
+                          onPressed: () => _testButtons(0),
                         ),
                         RaisedButton(
-                          child: Text('2'),
-                          onPressed: null,
+                          key: UniqueKey(),
+                          child: Text('${(_progressValue[1])}', style: TextStyle(fontSize: 60)),
+                          onPressed: () => _testButtons(1),
                         ),
                         RaisedButton(
-                          child: Text('3'),
-                          onPressed: null,
+                          key: UniqueKey(),
+                          child: Text('${(_progressValue[2])}', style: TextStyle(fontSize: 60)),
+                          onPressed: () => _testButtons(2),
                         ),
                       ],
                     ),
                     ButtonBar(
+                      buttonMinWidth: 100,
+                      buttonHeight: 100,
                       children: <Widget>[
                         RaisedButton(
-                          child: Text('4'),
-                          onPressed: null,
+                          key: UniqueKey(),
+                          child: Text('${(_progressValue[3])}', style: TextStyle(fontSize: 60)),
+                          onPressed: () => _testButtons(3),
                         ),
                         RaisedButton(
-                          child: Text('5'),
-                          onPressed: null,
+                          key: UniqueKey(),
+                          child: Text('${(_progressValue[4])}', style: TextStyle(fontSize: 60)),
+                          onPressed: () => _testButtons(4),
                         ),
                         RaisedButton(
-                          child: Text('6'),
-                          onPressed: null,
+                          key: UniqueKey(),
+                          child: Text('${(_progressValue[5])}', style: TextStyle(fontSize: 60)),
+                          onPressed: () => _testButtons(5),
                         ),
                       ],
                     ),
                     ButtonBar(
+                      buttonMinWidth: 100,
+                      buttonHeight: 100,
                       children: <Widget>[
                         RaisedButton(
-                          child: Text('7'),
-                          onPressed: null,
+                          key: UniqueKey(),
+                          child: Text('${(_progressValue[6])}', style: TextStyle(fontSize: 60)),
+                          onPressed: () => _testButtons(6),
                         ),
                         RaisedButton(
-                          child: Text('8'),
-                          onPressed: null,
+                          key: UniqueKey(),
+                          child: Text('${(_progressValue[7])}', style: TextStyle(fontSize: 60)),
+                          onPressed: () => _testButtons(7),
                         ),
                         RaisedButton(
-                          child: Text('9'),
-                          onPressed: null,
+                          key: UniqueKey(),
+                          child: Text('${(_progressValue[8])}', style: TextStyle(fontSize: 60)),
+                          onPressed: () => _testButtons(8),
                         ),
                       ],
                     ),
                   ],
                 ),
-                
               ],
             ),
           ),
+        ),
+        floatingActionButton: FloatingActionButton.extended(
+          onPressed: () {
+            setState(() {
+              _winFlag = false;
+              _flag = true;
+              _progressValue = ["", "", "", "", "", "", "", "", ""];
+              _progressText = "Ходит 1й игрок";
+            });
+          },
+          label: Text('Переиграть'),
+          icon: Icon(Icons.gamepad),
         ),
       ),
     );
   }
 
-  //   ButtonBar(
-  //     children: <Widget>[
-  //       RaisedButton(child: Text('1'),onPressed: null,),
-  //       RaisedButton(child: Text('2'),onPressed: null,),
-  //       RaisedButton(child: Text('3'),onPressed: null,),
-  //     ],
-  //   ),
+  _testButtons(int number) {
+    setState(() {
+      if (_progressValue[number] == '' && !_winFlag) {
+        if (_flag) {
+          _progressValue[number] = "X";
+          _flag = !_flag;
+          if (_checkWin() == false) {
+            _progressText = "Ходит 2й игрок";
+            return;
+          } else {
+            _progressText = _checkWin();
+            return;
+          }
+        } else {
+          _progressValue[number] = 'O';
+          _flag = !_flag;
+          if (_checkWin() == false) {
+            _progressText = "Ходит 1й игрок";
+            return;
+          } else {
+            _progressText = _checkWin();
+            return;
+          }
+        }
+      }
+    });
+  }
 
-//   void _updateProgress() {
-//     const oneSec = const Duration(seconds: 1);
-//     Timer.periodic(oneSec, (Timer t){
-//       setState(() {
-//         _progressValue += 0.2;
-//         if(_progressValue.toStringAsFixed(1) == '1.0') {
-//           _loading = false;
-//           t.cancel();
-//           _progressValue = 0.0;
-//           return;
-//         }
-//       });
-//     });
-//   }
+  _checkWin() {
+    if ((_progressValue[0] == 'X' &&
+            _progressValue[3] == 'X' &&
+            _progressValue[6] == 'X') ||
+        (_progressValue[1] == 'X' &&
+            _progressValue[4] == 'X' &&
+            _progressValue[7] == 'X') ||
+        (_progressValue[2] == 'X' &&
+            _progressValue[5] == 'X' &&
+            _progressValue[8] == 'X') ||
+        (_progressValue[0] == 'X' &&
+            _progressValue[1] == 'X' &&
+            _progressValue[2] == 'X') ||
+        (_progressValue[3] == 'X' &&
+            _progressValue[4] == 'X' &&
+            _progressValue[5] == 'X') ||
+        (_progressValue[6] == 'X' &&
+            _progressValue[7] == 'X' &&
+            _progressValue[8] == 'X') ||
+        (_progressValue[2] == 'X' &&
+            _progressValue[4] == 'X' &&
+            _progressValue[6] == 'X') ||
+        (_progressValue[0] == 'X' &&
+            _progressValue[4] == 'X' &&
+            _progressValue[8] == 'X')) {
+      _winFlag = true;
+      return "Победитель игрок номер 1";
+    } else if ((_progressValue[0] == 'O' &&
+            _progressValue[3] == 'O' &&
+            _progressValue[6] == 'O') ||
+        (_progressValue[1] == 'O' &&
+            _progressValue[4] == 'O' &&
+            _progressValue[7] == 'O') ||
+        (_progressValue[2] == 'O' &&
+            _progressValue[5] == 'O' &&
+            _progressValue[8] == 'O') ||
+        (_progressValue[0] == 'O' &&
+            _progressValue[1] == 'O' &&
+            _progressValue[2] == 'O') ||
+        (_progressValue[3] == 'O' &&
+            _progressValue[4] == 'O' &&
+            _progressValue[5] == 'O') ||
+        (_progressValue[6] == 'O' &&
+            _progressValue[7] == 'O' &&
+            _progressValue[8] == 'O') ||
+        (_progressValue[2] == 'O' &&
+            _progressValue[4] == 'O' &&
+            _progressValue[6] == 'O') ||
+        (_progressValue[0] == 'O' &&
+            _progressValue[4] == 'O' &&
+            _progressValue[8] == 'O')) {
+      _winFlag = true;
+      return "Победитель игрок номер 2";
+    } else if (!_progressValue.contains('')) {
+      return "Ничья";
+    } else
+      return false;
+  }
 }
+
+//FloatingActionButton(onPressed: null)
